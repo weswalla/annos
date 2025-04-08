@@ -1,139 +1,159 @@
-## 📂 Codebase Directory Structure
+# 📂 Codebase Directory Structure
 
-A clear and intuitive directory layout to reflect the above bounded contexts and layers:
+## 🔍 Concise Version
 
 ```
 structured-annotation-app/
-├── src/
-│   ├── annotation/
-│   │   ├── domain/
-│   │   ├── services/
-│   │   ├── repositories/
-│   │   └── events/
-│   ├── evaluation/
-│   │   ├── domain/
-│   │   ├── services/
-│   │   ├── repositories/
-│   │   └── events/
-│   ├── tagging/
-│   │   ├── domain/
-│   │   ├── services/
-│   │   ├── repositories/
-│   │   └── events/
-│   ├── collection/
-│   │   ├── domain/
-│   │   ├── services/
-│   │   ├── repositories/
-│   │   └── events/
-│   ├── template/
-│   │   ├── domain/
-│   │   ├── services/
-│   │   ├── repositories/
-│   │   └── events/
-│   ├── webpage/
-│   │   ├── domain/
-│   │   ├── services/
-│   │   ├── repositories/
-│   │   └── events/
-│   ├── infrastructure/
-│   │   ├── database/
-│   │   ├── messaging/
-│   │   └── integrations/
-│   └── presentation/
-│       ├── browser-extension/
-│       └── web-dashboard/
-├── tests/
-├── docs/
-└── config/
+├── apps/                      # Presentation Layer
+│   ├── web-dashboard/         # Web UI
+│   ├── browser-extension/     # Browser extension
+│   └── api-server/            # API endpoints
+│
+├── packages/                  # Core functionality
+│   ├── core/                  # Shared utilities
+│   ├── atproto/               # ATProto integration
+│   │
+│   ├── annotation/            # Bounded Context: Annotations
+│   ├── evaluation/            # Bounded Context: Evaluations
+│   ├── tagging/               # Bounded Context: Tags & Reactions
+│   ├── collection/            # Bounded Context: Collections
+│   ├── template/              # Bounded Context: Templates
+│   ├── webpage/               # Bounded Context: Webpage metadata
+│   └── auth/                  # Bounded Context: Authentication
+│
+├── tests/                     # Testing infrastructure
+└── config/                    # Configuration files
 ```
 
----
+## 📋 Detailed Version
 
-# 📁 Codebase Directory Structure (Monorepo Style)
-
-```bash
+```
 structured-annotation-app/
-├── apps/                         # Entrypoints and delivery mechanisms
-│   ├── web-dashboard/            # Frontend app
-│   ├── browser-extension/        # Browser extension UI
-│   └── api-server/               # HTTP APIs (controllers, REST/GraphQL handlers)
-│       └── main.ts               # Server bootstrap file
+├── apps/                         # Presentation Layer
+│   ├── web-dashboard/            # Web application
+│   │   ├── components/           # UI components
+│   │   ├── pages/                # Page definitions
+│   │   ├── hooks/                # React hooks
+│   │   └── state/                # State management
+│   │
+│   ├── browser-extension/        # Browser extension
+│   │   ├── popup/                # Extension popup UI
+│   │   ├── content-scripts/      # Page injection scripts
+│   │   ├── background/           # Background service workers
+│   │   └── manifest.json         # Extension configuration
+│   │
+│   └── api-server/               # API server
+│       ├── controllers/          # Request handlers
+│       ├── routes/               # API route definitions
+│       ├── middleware/           # Request processing middleware
+│       └── server.ts             # Server bootstrap
 │
 ├── packages/
-│   ├── core/                     # Shared core logic (not domain-specific)
-│   │   ├── types/                # Shared types/interfaces (e.g. Result, Either, etc.)
-│   │   ├── utils/                # Generic helpers (validation, formatting)
-│   │   └── errors/               # Global error helpers
-│   │       └── DomainError.ts
-│
-│   ├── annotation/               # Bounded Context: Structured Annotations
-│   │   ├── domain/
+│   ├── core/                     # Shared core utilities
+│   │   ├── types/                # TypeScript types/interfaces
+│   │   ├── utils/                # Helper functions
+│   │   ├── errors/               # Error handling
+│   │   └── result/               # Result pattern implementation
+│   │
+│   ├── atproto/                  # ATProto integration
+│   │   ├── client/               # ATProto client implementation
+│   │   ├── lexicons/             # Lexicon definitions
+│   │   ├── mappers/              # Domain-to-record mappers
+│   │   └── repositories/         # Repository implementations
+│   │
+│   ├── annotation/               # Bounded Context: Annotations
+│   │   ├── domain/               # Domain Layer
 │   │   │   ├── entities/         # Annotation entity
-│   │   │   │   └── StructuredAnnotation.ts
-│   │   │   ├── value-objects/    # Notes, highlights, etc.
-│   │   │   ├── services/         # Pure domain logic (e.g., constraints)
+│   │   │   ├── value-objects/    # Value objects (notes, highlights)
+│   │   │   ├── aggregates/       # Aggregate roots
 │   │   │   └── events/           # Domain events
-│   │   │       └── AnnotationCreated.ts
-│   │   ├── application/
-│   │   │   ├── use-cases/        # App service layer for commands/queries
-│   │   │   │   └── CreateAnnotation.ts
-│   │   │   ├── dtos/             # Data Transfer Objects
-│   │   │   └── errors/           # Expressive application-specific errors
-│   │   │       └── InvalidAnnotationError.ts
-│   │   ├── infrastructure/
-│   │   │   ├── repositories/     # Database implementations
-│   │   │   │   └── PrismaAnnotationRepository.ts
-│   │   │   └── persistence/      # DB models, mappers
-│   │   │       └── annotation.mapper.ts
-│   │   └── tests/
-│   │       ├── unit/             # Pure domain logic unit tests
-│   │       └── integration/      # Persistence + use-case level tests
+│   │   │
+│   │   ├── application/          # Application Layer
+│   │   │   ├── use-cases/        # Application services
+│   │   │   ├── dtos/             # Data transfer objects
+│   │   │   └── ports/            # Repository interfaces
+│   │   │
+│   │   └── infrastructure/       # Infrastructure Layer
+│   │       ├── repositories/     # Repository implementations
+│   │       └── services/         # External service adapters
+│   │
+│   ├── evaluation/               # Bounded Context: Evaluations
+│   │   ├── domain/               # Domain Layer
+│   │   │   ├── entities/         # Criterion entity
+│   │   │   ├── value-objects/    # Value objects (ratings, dyads, triads)
+│   │   │   └── events/           # Domain events
+│   │   │
+│   │   ├── application/          # Application Layer
+│   │   │   ├── use-cases/        # Application services
+│   │   │   └── ports/            # Repository interfaces
+│   │   │
+│   │   └── infrastructure/       # Infrastructure Layer
+│   │       └── repositories/     # Repository implementations
+│   │
+│   ├── tagging/                  # Bounded Context: Tags & Reactions
+│   │   ├── domain/               # Domain Layer
+│   │   ├── application/          # Application Layer
+│   │   └── infrastructure/       # Infrastructure Layer
+│   │
+│   ├── collection/               # Bounded Context: Collections
+│   │   ├── domain/               # Domain Layer
+│   │   ├── application/          # Application Layer
+│   │   └── infrastructure/       # Infrastructure Layer
+│   │
+│   ├── template/                 # Bounded Context: Templates
+│   │   ├── domain/               # Domain Layer
+│   │   ├── application/          # Application Layer
+│   │   └── infrastructure/       # Infrastructure Layer
+│   │
+│   ├── webpage/                  # Bounded Context: Webpage metadata
+│   │   ├── domain/               # Domain Layer
+│   │   ├── application/          # Application Layer
+│   │   └── infrastructure/       # Infrastructure Layer
+│   │
+│   ├── auth/                     # Bounded Context: Authentication
+│   │   ├── domain/               # Domain Layer
+│   │   ├── application/          # Application Layer
+│   │   └── infrastructure/       # Infrastructure Layer
+│   │
+│   └── shared-kernel/            # Shared domain concepts
+│       ├── entities/             # Base entity classes
+│       ├── value-objects/        # Shared value objects
+│       └── events/               # Base event classes
 │
-│   ├── evaluation/               # Bounded Context: Evaluation + Criteria
-│   │   ├── domain/
-│   │   │   ├── entities/         # Criterion
-│   │   │   ├── value-objects/    # Ratings, dyads, triads
-│   │   │   ├── events/
-│   │   │   └── services/         # Validation logic (e.g. triad sums = 1.0)
-│   │   ├── application/
-│   │   │   ├── use-cases/        # DefineCriterion, RateContent
-│   │   │   └── errors/           # e.g. InvalidTriadError
-│   │   ├── infrastructure/
-│   │   │   └── repositories/
-│   │   └── tests/
+├── tests/                        # Testing infrastructure
+│   ├── e2e/                      # End-to-end tests
+│   ├── integration/              # Integration tests
+│   └── fixtures/                 # Test data
 │
-│   ├── template/                 # Bounded Context: Annotation Templates
-│   │   ├── domain/
-│   │   │   ├── entities/         # AnnotationTemplate
-│   │   │   └── events/
-│   │   ├── application/
-│   │   │   └── use-cases/        # CreateTemplate, ShareTemplate
-│   │   └── infrastructure/
-│   │   └── tests/
+├── scripts/                      # Build and utility scripts
+│   ├── build.ts                  # Build script
+│   └── deploy.ts                 # Deployment script
 │
-│   ├── collection/              # Bounded Context: Collections (Curation)
-│   ├── tagging/                 # Tags & reactions (quick metadata)
-│   ├── webpage/                 # Webpage metadata (title, favicon, etc.)
+├── config/                       # Configuration
+│   ├── development.ts            # Development environment
+│   ├── production.ts             # Production environment
+│   └── test.ts                   # Test environment
 │
-│   └── shared-kernel/           # Cross-domain abstractions
-│       ├── domain/
-│       │   └── Entity.ts
-│       ├── value-objects/
-│       │   └── URL.ts
-│       ├── base/
-│       │   └── AggregateRoot.ts
-│       └── infrastructure/
-│           └── Result.ts        # Success/failure pattern
+├── docs/                         # Documentation
+│   ├── api/                      # API documentation
+│   └── architecture/             # Architecture documentation
 │
-├── tests/                       # Global test config, e2e, test data
-│   ├── e2e/
-│   ├── mocks/
-│   └── setup/
+├── .github/                      # GitHub configuration
+│   └── workflows/                # CI/CD workflows
 │
-├── scripts/                     # CLI tools, DB migrations, lint, build
-│   └── migrate.ts
-├── prisma/                      # DB schema + seed files
-├── .env
-├── tsconfig.json
-└── package.json
+├── package.json                  # Project metadata
+├── tsconfig.json                 # TypeScript configuration
+└── README.md                     # Project overview
 ```
+
+Each bounded context follows the same layered architecture pattern:
+
+1. **Domain Layer**: Contains business logic, entities, value objects, and domain events
+2. **Application Layer**: Orchestrates use cases, defines repository interfaces
+3. **Infrastructure Layer**: Implements repositories, integrates with ATProto
+
+This structure ensures:
+- Clear separation of concerns
+- Domain-driven organization
+- Testability at all levels
+- Scalability for team collaboration
