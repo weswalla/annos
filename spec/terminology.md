@@ -4,7 +4,7 @@
 
 ## 📝 Structured Annotation
 
-A general-purpose container used to capture structured information about any web content. It aggregates various forms of user input, including evaluations, tagging, reactions, and personal notes.
+A general-purpose container used to capture structured information about any web content. It aggregates various forms of user input, including evaluations, tagging, reactions, and personal notes. In the ATProto context, annotations are published as records to a user's repository on their Personal Data Server (PDS).
 
 ---
 
@@ -40,7 +40,7 @@ Simple, expressive evaluations typically conveyed through emoji or icons (e.g., 
 
 ## 📚 Curations (Collections)
 
-Sets or groups of annotated items organized purposefully by users, providing structure, priority, and context. Collections help users organize and share annotated content around meaningful themes.
+Sets or groups of annotated items organized purposefully by users, providing structure, priority, and context. Collections help users organize and share annotated content around meaningful themes. Collections are published as ATProto records with references to annotation records.
 
 ---
 
@@ -58,12 +58,40 @@ The interactive interface through which users create structured annotations. The
 
 ## 🗂️ Annotation Templates
 
-Predefined schemas specifying the structure of annotations, including evaluations, criteria, available tags, reactions, and selections (single/multi-select). Templates standardize structured annotations, making data consistent and easier to analyze.
+Predefined schemas specifying the structure of annotations, including evaluations, criteria, available tags, reactions, and selections (single/multi-select). Templates standardize structured annotations, making data consistent and easier to analyze. Templates can be shared as ATProto records that other users can reference.
 
 ---
 
 ## 🌐 Content Profile
 
 The collective structured annotations associated with a specific piece of web content, providing a summary and aggregated insights based on multiple user annotations.
+
+---
+
+## 🔑 ATProto Concepts
+
+### DID (Decentralized Identifier)
+
+A globally unique identifier that doesn't require a centralized registry. In ATProto, DIDs identify users and are the foundation of the identity system.
+
+### PDS (Personal Data Server)
+
+The server that hosts a user's data repository in the ATProto network. Users connect to their PDS to publish and manage their data.
+
+### Repository
+
+A user's personal datastore on their PDS, containing all their records. Each repository is identified by the user's DID.
+
+### Record
+
+The fundamental unit of data in ATProto. Annotations, collections, and templates are all stored as records in a user's repository.
+
+### Lexicon
+
+A schema definition format used in ATProto to define the structure and validation rules for different types of records.
+
+### XRPC
+
+The remote procedure call protocol used to communicate with ATProto services.
 
 ---

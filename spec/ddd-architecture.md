@@ -2,7 +2,7 @@
 
 # 🧩 Domain-Driven Design (DDD) Layered Architecture
 
-This document outlines a layered architecture following Domain-Driven Design (DDD) principles for the Structured Annotation system.
+This document outlines a layered architecture following Domain-Driven Design (DDD) principles for the Structured Annotation system built on the ATProto network.
 
 ---
 
@@ -13,6 +13,7 @@ This document outlines a layered architecture following Domain-Driven Design (DD
 - Encapsulates business rules and logic
 - Includes entities, value objects, aggregates, and domain services
 - No dependencies on other layers
+- Defines core annotation concepts independent of ATProto implementation details
 
 ### 🟡 Application Layer
 
@@ -21,18 +22,22 @@ This document outlines a layered architecture following Domain-Driven Design (DD
 - Produces/handles domain events
 - Handles validation and error propagation
 - Returns `Result`/`Either` objects instead of throwing
+- Coordinates with ATProto services for record publishing and retrieval
 
 ### 🔵 Infrastructure Layer
 
-- Concrete implementations: database, cache, messaging, search
-- Mappers and adapters between persistence and domain models
-- Implements repository interfaces
+- ATProto client implementations for PDS communication
+- Lexicon definition and validation
+- Repository implementations that translate between domain objects and ATProto records
+- Bluesky authentication adapters
+- Mappers between ATProto records and domain models
 
 ### 🔴 Presentation Layer
 
 - Controllers, routes, GraphQL resolvers, extension UIs
 - Translates external input into use-case input
 - Returns use-case output as JSON or UI-rendered state
+- Handles Bluesky authentication flow
 
 ---
 
@@ -47,26 +52,44 @@ The **Structured Annotation** represents the core domain. It captures user inter
 ### 1. Annotation Management
 
 - Responsible for creation, updating, and retrieval of structured annotations linked to webpages.
+- Publishes annotations as ATProto records to users' repositories.
 
 ### 2. Evaluation & Criteria Management
 
 - Manages structured evaluations, criteria definitions, and related scoring mechanisms.
+- Ensures evaluations conform to lexicon schemas.
 
 ### 3. Tagging & Reactions
 
 - Handles tagging, quick reactions, and related metadata for rapid content categorization.
+- Encodes tags and reactions within ATProto record formats.
 
 ### 4. Collection Management (Curation)
 
 - Oversees user-generated collections or groupings of annotated content.
+- Publishes collections as ATProto records with references to annotation records.
 
 ### 5. Annotation Template Management
 
 - Manages creation, editing, and sharing of annotation templates and reusable criteria.
+- Allows templates to be shared as ATProto records.
 
 ### 6. Webpage Management
 
 - Manages information about annotated webpages, including metadata extraction and retrieval.
+- Associates webpage metadata with annotation references in ATProto records.
+
+### 7. ATProto Identity & Authentication
+
+- Manages user authentication through Bluesky accounts.
+- Handles DID resolution and verification.
+- Maintains user session state with the PDS.
+
+### 8. ATProto Repository Management
+
+- Handles CRUD operations for records in users' repositories.
+- Manages subscriptions to relevant record types.
+- Implements query capabilities across the ATProto network.
 
 ---
 
@@ -106,6 +129,8 @@ The **Structured Annotation** represents the core domain. It captures user inter
 - AnnotationCreated
 - AnnotationUpdated
 - AnnotationDeleted
+- AnnotationPublishedToATProto
+- AnnotationPublishingFailed
 
 ### Evaluation Management
 
@@ -125,6 +150,8 @@ The **Structured Annotation** represents the core domain. It captures user inter
 - CollectionUpdated
 - AnnotationAddedToCollection
 - AnnotationRemovedFromCollection
+- CollectionPublishedToATProto
+- CollectionPublishingFailed
 
 ### Template Management
 
@@ -133,11 +160,27 @@ The **Structured Annotation** represents the core domain. It captures user inter
 - AnnotationTemplateDeleted
 - CriterionAddedToTemplate
 - CriterionRemovedFromTemplate
+- TemplatePublishedToATProto
+- TemplatePublishingFailed
 
 ### Webpage Management
 
 - WebpageRegistered
 - WebpageMetadataUpdated
+
+### ATProto Identity & Authentication
+
+- UserLoggedInWithBluesky
+- UserLoggedOut
+- UserSessionRefreshed
+- AuthenticationFailed
+
+### ATProto Repository Management
+
+- RecordCreated
+- RecordUpdated
+- RecordDeleted
+- SubscriptionUpdated
 
 ---
 
@@ -163,41 +206,51 @@ The **Structured Annotation** represents the core domain. It captures user inter
 
 ## 📁 Repositories
 
-Interfaces for persistence of aggregates:
+Interfaces for persistence of aggregates via ATProto:
 
 - **StructuredAnnotationRepository**
 
-  - save(annotation)
-  - findById(id)
-  - findByUrl(url)
+  - save(annotation) // Creates/updates ATProto record
+  - findById(id) // Retrieves record by ATProto record ID
+  - findByUrl(url) // Queries records by URL reference
+  - findByDid(did) // Finds annotations by user DID
 
 - **CollectionRepository**
 
-  - save(collection)
-  - findById(id)
-  - findByUserId(userId)
+  - save(collection) // Creates/updates ATProto record
+  - findById(id) // Retrieves record by ATProto record ID
+  - findByUserId(did) // Finds collections by user DID
+  - findByAnnotationId(annotationId) // Finds collections containing an annotation
 
 - **CriterionRepository**
 
-  - save(criterion)
-  - findById(id)
-  - findAll()
+  - save(criterion) // Creates/updates ATProto record
+  - findById(id) // Retrieves record by ATProto record ID
+  - findAll() // Queries all available criteria
+  - findByTemplate(templateId) // Finds criteria by template
 
 - **TagRepository**
 
-  - save(tag)
-  - findById(id)
-  - findByName(name)
+  - save(tag) // Creates/updates ATProto record
+  - findById(id) // Retrieves record by ATProto record ID
+  - findByName(name) // Queries tags by name
+  - findPopularTags(limit) // Finds most used tags
 
 - **AnnotationTemplateRepository**
 
-  - save(template)
-  - findById(id)
-  - findAll()
+  - save(template) // Creates/updates ATProto record
+  - findById(id) // Retrieves record by ATProto record ID
+  - findAll() // Queries all available templates
+  - findByCreator(did) // Finds templates by creator
 
 - **WebpageRepository**
-  - save(webpage)
-  - findByUrl(url)
+  - save(webpage) // Creates/updates ATProto record
+  - findByUrl(url) // Queries records by URL
+
+- **ATProtoUserRepository**
+  - findByDid(did) // Retrieves user profile by DID
+  - getCurrentSession() // Gets current authenticated session
+  - refreshSession() // Refreshes authentication token
 
 ---
 
@@ -211,16 +264,22 @@ Services coordinating interactions between repositories and domain logic:
 - CollectionService
 - AnnotationTemplateService
 - WebpageService
+- ATProtoAuthenticationService
+- ATProtoRepositoryService
+- LexiconValidationService
 
 ---
 
 ## 🌉 Infrastructure Layer
 
-Implementation of repositories, event handling (message queues), and persistence:
+Implementation of repositories, event handling, and ATProto integration:
 
-- Database (SQL/NoSQL)
-- Event Store (for storing domain events)
-- External Integrations (Notification services, indexing/search engines)
+- ATProto Client (for PDS communication)
+- Lexicon Definitions and Validators
+- ATProto Record Mappers
+- Bluesky Authentication Adapter
+- Event Bus (for domain events)
+- Local Cache (for performance optimization)
 
 ---
 
