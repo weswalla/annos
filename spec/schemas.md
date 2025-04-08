@@ -51,10 +51,14 @@ Represents a user's evaluation against a specific criterion.
   - `numeric`: Simple numeric rating (e.g., stars).
   - `dyad`: Two-pole spectrum (0.0–1.0).
   - `triad`: Three-pole distribution (three coordinates summing to 1.0).
-- `value`: _(Object)_ Numeric or geometric rating:
-  - For `numeric`: `value: Number` _(e.g., 4.5)_
-  - For `dyad`: `value: Number` _(0.0–1.0, position between two extremes)_
-  - For `triad`: `value: {cornerA: Number, cornerB: Number, cornerC: Number}` _(values sum to 1.0)_
+- Type-specific values (only one will be present based on criterionType):
+  - `numericValue`: _(Number)_ For numeric criteria (e.g., 4.5)
+  - `dyadValue`: _(Number)_ For dyadic criteria (0.0–1.0, position between two extremes)
+  - `triadValue`: _(Object)_ For triadic criteria:
+    - `cornerA`: _(Number)_ Weight for first dimension (0.0-1.0)
+    - `cornerB`: _(Number)_ Weight for second dimension (0.0-1.0)
+    - `cornerC`: _(Number)_ Weight for third dimension (0.0-1.0)
+    - Values should sum to 1.0
 
 ---
 
@@ -101,13 +105,20 @@ A defined dimension for structured evaluation.
 - `name`: _(String)_ Human-readable name _(e.g., "Creativity")_.
 - `description`: _(String, optional)_ Explanation or context.
 - `criterionType`: _(Enum)_ Type: `numeric`, `dyad`, or `triad`.
-- For `dyad`:
-  - `poleA`: _(String)_ One extreme (e.g., "Experimental")
-  - `poleB`: _(String)_ Opposite extreme (e.g., "Theoretical")
-- For `triad`:
-  - `cornerA`: _(String)_ Label for first dimension.
-  - `cornerB`: _(String)_ Label for second dimension.
-  - `cornerC`: _(String)_ Label for third dimension.
+- Type-specific configuration (only one will be present based on criterionType):
+  - `numericConfig`: _(Object)_ For numeric criteria:
+    - `min`: _(Number)_ Minimum value (default: 1)
+    - `max`: _(Number)_ Maximum value (default: 5)
+    - `step`: _(Number)_ Increment step (default: 1)
+    - `displayFormat`: _(Enum)_ Presentation format: `stars`, `number`, or `slider` (default: `stars`)
+  - `dyadConfig`: _(Object)_ For dyadic criteria:
+    - `poleA`: _(String)_ One extreme (e.g., "Experimental")
+    - `poleB`: _(String)_ Opposite extreme (e.g., "Theoretical")
+    - `steps`: _(Integer)_ Number of discrete steps (default: 5)
+  - `triadConfig`: _(Object)_ For triadic criteria:
+    - `cornerA`: _(String)_ Label for first dimension.
+    - `cornerB`: _(String)_ Label for second dimension.
+    - `cornerC`: _(String)_ Label for third dimension.
 
 ---
 

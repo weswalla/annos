@@ -94,15 +94,57 @@ The system defines the following custom lexicons for the ATProto network:
     },
     "criteriaEvaluation": {
       "type": "object",
-      "required": ["criterionId", "criterionType", "value"],
+      "required": ["criterionId", "criterionType"],
       "properties": {
         "criterionId": { "type": "string" },
         "criterionType": { 
           "type": "string", 
           "enum": ["numeric", "dyad", "triad"] 
         },
-        "value": { "type": "unknown" }
-      }
+        "numericValue": { 
+          "type": "number",
+          "description": "Used when criterionType is 'numeric'"
+        },
+        "dyadValue": { 
+          "type": "number", 
+          "minimum": 0.0,
+          "maximum": 1.0,
+          "description": "Used when criterionType is 'dyad', represents position between two poles (0.0-1.0)"
+        },
+        "triadValue": { 
+          "type": "object",
+          "description": "Used when criterionType is 'triad'",
+          "required": ["cornerA", "cornerB", "cornerC"],
+          "properties": {
+            "cornerA": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+            "cornerB": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+            "cornerC": { "type": "number", "minimum": 0.0, "maximum": 1.0 }
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "criterionType": { "enum": ["numeric"] },
+            "numericValue": { "type": "number" }
+          },
+          "required": ["numericValue"]
+        },
+        {
+          "properties": {
+            "criterionType": { "enum": ["dyad"] },
+            "dyadValue": { "type": "number" }
+          },
+          "required": ["dyadValue"]
+        },
+        {
+          "properties": {
+            "criterionType": { "enum": ["triad"] },
+            "triadValue": { "type": "object" }
+          },
+          "required": ["triadValue"]
+        }
+      ]
     },
     "singleSelectResponse": {
       "type": "object",
@@ -237,12 +279,60 @@ The system defines the following custom lexicons for the ATProto network:
           "type": "string", 
           "enum": ["numeric", "dyad", "triad"] 
         },
-        "poleA": { "type": "string" },
-        "poleB": { "type": "string" },
-        "cornerA": { "type": "string" },
-        "cornerB": { "type": "string" },
-        "cornerC": { "type": "string" }
-      }
+        "numericConfig": {
+          "type": "object",
+          "description": "Configuration for numeric criteria",
+          "properties": {
+            "min": { "type": "number", "default": 1 },
+            "max": { "type": "number", "default": 5 },
+            "step": { "type": "number", "default": 1 },
+            "displayFormat": { "type": "string", "enum": ["stars", "number", "slider"], "default": "stars" }
+          }
+        },
+        "dyadConfig": {
+          "type": "object",
+          "description": "Configuration for dyadic criteria",
+          "required": ["poleA", "poleB"],
+          "properties": {
+            "poleA": { "type": "string" },
+            "poleB": { "type": "string" },
+            "steps": { "type": "integer", "minimum": 2, "default": 5 }
+          }
+        },
+        "triadConfig": {
+          "type": "object",
+          "description": "Configuration for triadic criteria",
+          "required": ["cornerA", "cornerB", "cornerC"],
+          "properties": {
+            "cornerA": { "type": "string" },
+            "cornerB": { "type": "string" },
+            "cornerC": { "type": "string" }
+          }
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "criterionType": { "enum": ["numeric"] },
+            "numericConfig": { "type": "object" }
+          },
+          "required": ["numericConfig"]
+        },
+        {
+          "properties": {
+            "criterionType": { "enum": ["dyad"] },
+            "dyadConfig": { "type": "object" }
+          },
+          "required": ["dyadConfig"]
+        },
+        {
+          "properties": {
+            "criterionType": { "enum": ["triad"] },
+            "triadConfig": { "type": "object" }
+          },
+          "required": ["triadConfig"]
+        }
+      ]
     },
     "singleSelectPrompt": {
       "type": "object",
