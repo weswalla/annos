@@ -11,7 +11,7 @@ structured-annotation-app/
 │
 ├── packages/                  # Core functionality
 │   ├── core/                  # Shared utilities
-│   ├── atproto/               # ATProto integration
+│   ├── atproto-core/          # Core ATProto client & utilities
 │   │
 │   ├── annotation/            # Bounded Context: Annotations
 │   ├── evaluation/            # Bounded Context: Evaluations
@@ -55,11 +55,11 @@ structured-annotation-app/
 │   │   ├── errors/               # Error handling
 │   │   └── result/               # Result pattern implementation
 │   │
-│   ├── atproto/                  # ATProto integration
-│   │   ├── client/               # ATProto client implementation
-│   │   ├── lexicons/             # Lexicon definitions
-│   │   ├── mappers/              # Domain-to-record mappers
-│   │   └── repositories/         # Repository implementations
+│   ├── atproto-core/             # Core ATProto functionality
+│   │   ├── client/               # Base ATProto client implementation
+│   │   ├── auth/                 # Authentication mechanisms
+│   │   ├── common/               # Shared ATProto utilities
+│   │   └── lexicons/             # Common lexicon definitions
 │   │
 │   ├── annotation/               # Bounded Context: Annotations
 │   │   ├── domain/               # Domain Layer
@@ -75,6 +75,10 @@ structured-annotation-app/
 │   │   │
 │   │   └── infrastructure/       # Infrastructure Layer
 │   │       ├── repositories/     # Repository implementations
+│   │       │   └── atproto/      # ATProto-specific repositories
+│   │       ├── mappers/          # Domain-to-record mappers
+│   │       │   └── atproto/      # ATProto-specific mappers
+│   │       ├── lexicons/         # Annotation-specific lexicons
 │   │       └── services/         # External service adapters
 │   │
 │   ├── evaluation/               # Bounded Context: Evaluations
@@ -88,32 +92,61 @@ structured-annotation-app/
 │   │   │   └── ports/            # Repository interfaces
 │   │   │
 │   │   └── infrastructure/       # Infrastructure Layer
-│   │       └── repositories/     # Repository implementations
+│   │       ├── repositories/     # Repository implementations
+│   │       │   └── atproto/      # ATProto-specific repositories
+│   │       ├── mappers/          # Domain-to-record mappers
+│   │       │   └── atproto/      # ATProto-specific mappers
+│   │       └── lexicons/         # Evaluation-specific lexicons
 │   │
 │   ├── tagging/                  # Bounded Context: Tags & Reactions
 │   │   ├── domain/               # Domain Layer
 │   │   ├── application/          # Application Layer
 │   │   └── infrastructure/       # Infrastructure Layer
+│   │       ├── repositories/     # Repository implementations
+│   │       │   └── atproto/      # ATProto-specific repositories
+│   │       ├── mappers/          # Domain-to-record mappers
+│   │       │   └── atproto/      # ATProto-specific mappers
+│   │       └── lexicons/         # Tagging-specific lexicons
 │   │
 │   ├── collection/               # Bounded Context: Collections
 │   │   ├── domain/               # Domain Layer
 │   │   ├── application/          # Application Layer
 │   │   └── infrastructure/       # Infrastructure Layer
+│   │       ├── repositories/     # Repository implementations
+│   │       │   └── atproto/      # ATProto-specific repositories
+│   │       ├── mappers/          # Domain-to-record mappers
+│   │       │   └── atproto/      # ATProto-specific mappers
+│   │       └── lexicons/         # Collection-specific lexicons
 │   │
 │   ├── template/                 # Bounded Context: Templates
 │   │   ├── domain/               # Domain Layer
 │   │   ├── application/          # Application Layer
 │   │   └── infrastructure/       # Infrastructure Layer
+│   │       ├── repositories/     # Repository implementations
+│   │       │   └── atproto/      # ATProto-specific repositories
+│   │       ├── mappers/          # Domain-to-record mappers
+│   │       │   └── atproto/      # ATProto-specific mappers
+│   │       └── lexicons/         # Template-specific lexicons
 │   │
 │   ├── webpage/                  # Bounded Context: Webpage metadata
 │   │   ├── domain/               # Domain Layer
 │   │   ├── application/          # Application Layer
 │   │   └── infrastructure/       # Infrastructure Layer
+│   │       ├── repositories/     # Repository implementations
+│   │       │   └── atproto/      # ATProto-specific repositories
+│   │       ├── mappers/          # Domain-to-record mappers
+│   │       │   └── atproto/      # ATProto-specific mappers
+│   │       └── lexicons/         # Webpage-specific lexicons
 │   │
 │   ├── auth/                     # Bounded Context: Authentication
 │   │   ├── domain/               # Domain Layer
 │   │   ├── application/          # Application Layer
 │   │   └── infrastructure/       # Infrastructure Layer
+│   │       ├── repositories/     # Repository implementations
+│   │       │   └── atproto/      # ATProto-specific repositories
+│   │       ├── services/         # Authentication services
+│   │       │   └── atproto/      # ATProto-specific auth services
+│   │       └── adapters/         # External auth adapters
 │   │
 │   └── shared-kernel/            # Shared domain concepts
 │       ├── entities/             # Base entity classes
